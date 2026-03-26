@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>BSFL Feeding Label</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f0f0f0;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        /* --- Input Form --- */
+        .input-screen {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        .input-screen h1 {
+            font-size: 22px;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .input-screen .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 12px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background: #fff;
+            -webkit-appearance: none;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2d6a4f;
+        }
+
+        .form-group .hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .btn-primary { background: #2d6a4f; color: #fff; }
+        .btn-primary:active { background: #1b4332; }
+        .btn-secondary { background: #e0e0e0; color: #333; }
+        .btn-print { background: #1a73e8; color: #fff; }
+        .btn-print:active { background: #1558b0; }
+
+        /* --- TWI Label Card --- */
+        .preview-screen {
+            display: none;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        .label-card {
+            background: #fff;
+            border: 3px solid #000;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+
+        /* Header band */
+        .label-band {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* Big bin ID */
+        .bin-id {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 900;
+            padding: 8px 0 4px;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #000;
+        }
+
+        /* Info strip */
+        .info-strip {
+            display: flex;
+            border-bottom: 2px solid #000;
+            font-size: 11px;
+        }
+
+        .info-strip .info-cell {
+            flex: 1;
+            padding: 5px 8px;
+            border-right: 1px solid #000;
+        }
+
+        .info-strip .info-cell:last-child { border-right: none; }
+
+        .info-cell .info-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #555;
+            letter-spacing: 0.5px;
+        }
+
+        .info-cell .info-value {
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Steps — TWI Job Breakdown style */
+        .steps-header {
+            background: #000;
+            color: #fff;
+            display: flex;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .steps-header > div { padding: 4px 6px; }
+        .col-check { width: 32px; text-align: center; }
+        .col-step { width: 36px; text-align: center; }
+        .col-when { flex: 1; }
+        .col-what { flex: 2; }
+
+        .step-row {
+            display: flex;
+            align-items: stretch;
+            border-bottom: 1px solid #ccc;
+            min-height: 36px;
+        }
+
+        .step-row:last-child { border-bottom: none; }
+
+        .step-row > div {
+            padding: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-row .col-check {
+            justify-content: center;
+        }
+
+        .step-row .col-step {
+            justify-content: center;
+            font-weight: 900;
+            font-size: 16px;
+        }
+
+        .step-row .col-when {
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        .when-date {
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .when-day {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .step-row .col-what {
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .what-main {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .what-key-point {
+            font-size: 10px;
+            color: #444;
+            margin-top: 1px;
+            font-style: italic;
+        }
+
+        .checkbox {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #000;
+        }
+
+        /* Harvest row */
+        .step-row.harvest-row {
+            background: #f0f0f0;
+            border-top: 2px solid #000;
+            border-bottom: none;
+        }
+
+        .harvest-row .what-main {
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        /* Totals bar */
+        .totals-bar {
+            background: #f5f5f5;
+            border-top: 2px solid #000;
+            padding: 5px 8px;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .totals-bar strong { font-weight: 800; }
+
+        /* Footer */
+        .label-footer {
+            border-top: 1px solid #ccc;
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #888;
+            text-align: center;
+        }
+
+        .demo-tag {
+            display: inline-block;
+            background: #000;
+            color: #fff;
+            font-size: 8px;
+            padding: 1px 5px;
+            letter-spacing: 1px;
+            margin-left: 4px;
+        }
+
+        .actions {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* --- Print Styles --- */
+        @media print {
+            body { background: #fff; }
+            .input-screen, .actions, .no-print { display: none !important; }
+            .preview-screen { display: block !important; padding: 0; margin: 0; max-width: none; }
+            .label-card {
+                max-width: 4in;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- INPUT FORM -->
+<div class="input-screen" id="inputScreen">
+    <h1>BSFL Feeding Label</h1>
+    <p class="subtitle">Weigh eggs, enter below, print label for tray</p>
+
+    <div class="form-group">
+        <label for="eggWeight">Egg Weight (grams)</label>
+        <input type="number" id="eggWeight" inputmode="decimal" step="any" placeholder="e.g. 0.5" autofocus>
+        <p class="hint">Weigh eggs on scale, enter total weight</p>
+    </div>
+
+    <div class="form-group">
+        <label for="binNumber">Bin Number</label>
+        <input type="text" id="binNumber" inputmode="text" placeholder="e.g. B-12">
+    </div>
+
+    <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <input type="date" id="startDate">
+    </div>
+
+    <button class="btn btn-primary" onclick="generateLabel()">Generate Label</button>
+
+    <div id="errorMsg" style="color: #c62828; text-align: center; margin-top: 12px; font-size: 14px;"></div>
+</div>
+
+<!-- LABEL PREVIEW -->
+<div class="preview-screen" id="previewScreen">
+    <div class="label-card" id="labelCard">
+
+        <div class="label-band">Standard Work &mdash; BSFL Feeding Card</div>
+
+        <div class="bin-id" id="binDisplay"></div>
+
+        <div class="info-strip">
+            <div class="info-cell">
+                <div class="info-label">Start</div>
+                <div class="info-value" id="metaStart"></div>
+            </div>
+            <div class="info-cell">
+                <div class="info-label">Egg Wt</div>
+                <div class="info-value" id="metaEggWt"></div>
+            </div>
+            <div class="info-cell">
+                <div class="info-label">Est. Larvae</div>
+                <div class="info-value" id="metaLarvae"></div>
+            </div>
+        </div>
+
+        <!-- TWI Job Breakdown: Steps / Key Points -->
+        <div class="steps-header">
+            <div class="col-check"></div>
+            <div class="col-step">Step</div>
+            <div class="col-when">When</div>
+            <div class="col-what">What to Do <span style="font-weight:400; font-style:italic;">(key points)</span></div>
+        </div>
+
+        <div id="stepsBody"></div>
+
+        <div class="totals-bar">
+            <span><strong>Total Feed:</strong> <span id="totalWet"></span>g wet</span>
+            <span>(<span id="totalDry"></span>g dry + water)</span>
+        </div>
+
+        <div class="label-footer">
+            70/30 water:dry mix &bull; 0.22g dry/larva &bull; 90% hatch &bull;
+            Scale &plusmn;<span id="marginEggs"></span> eggs (<span id="marginPct"></span>%)
+            <span class="demo-tag">V1 DEMO</span>
+        </div>
+    </div>
+
+    <div class="actions no-print">
+        <button class="btn btn-print" onclick="window.print()">Print Label</button>
+        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById("startDate").valueAsDate = new Date();
+
+    function generateLabel() {
+        const eggWeight = parseFloat(document.getElementById("eggWeight").value);
+        const binNumber = document.getElementById("binNumber").value.trim();
+        const startDate = document.getElementById("startDate").value;
+        const errorMsg = document.getElementById("errorMsg");
+
+        errorMsg.textContent = "";
+
+        if (!eggWeight || eggWeight <= 0) { errorMsg.textContent = "Enter a valid egg weight."; return; }
+        if (!binNumber) { errorMsg.textContent = "Enter a bin number."; return; }
+        if (!startDate) { errorMsg.textContent = "Select a start date."; return; }
+
+        fetch("/calculate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ egg_weight: eggWeight, bin_number: binNumber, start_date: startDate })
+        })
+        .then(r => r.json())
+        .then(data => {
+            renderLabel(data);
+            document.getElementById("inputScreen").style.display = "none";
+            document.getElementById("previewScreen").style.display = "block";
+        })
+        .catch(err => {
+            errorMsg.textContent = "Error generating label. Try again.";
+            console.error(err);
+        });
+    }
+
+    function renderLabel(data) {
+        document.getElementById("binDisplay").textContent = data.bin_number;
+        document.getElementById("metaStart").textContent = data.start_date;
+        document.getElementById("metaEggWt").textContent = data.egg_weight + "g";
+        document.getElementById("metaLarvae").textContent = "~" + data.expected_larvae.toLocaleString();
+        document.getElementById("totalWet").textContent = data.total_wet_g.toLocaleString();
+        document.getElementById("totalDry").textContent = data.total_dry_g.toLocaleString();
+        document.getElementById("marginEggs").textContent = data.scale_margin_eggs;
+        document.getElementById("marginPct").textContent = data.scale_margin_pct;
+
+        const body = document.getElementById("stepsBody");
+        body.innerHTML = "";
+
+        data.feeds.forEach(f => {
+            let keyPoint = "";
+            if (f.extra_water_g > 0) {
+                keyPoint = `Feed ${f.wet_g.toLocaleString()}g wet mix + ${f.extra_water_g.toLocaleString()}g extra water = ${f.total_place_g.toLocaleString()}g total. Keep substrate moist.`;
+            }
+
+            const row = document.createElement("div");
+            row.className = "step-row";
+            row.innerHTML = `
+                <div class="col-check"><span class="checkbox"></span></div>
+                <div class="col-step">${f.feed_num}</div>
+                <div class="col-when">
+                    <span class="when-date">${f.date}</span>
+                    <span class="when-day">Day ${f.day}</span>
+                </div>
+                <div class="col-what">
+                    <span class="what-main">${f.extra_water_g > 0 ? f.total_place_g.toLocaleString() : f.wet_g.toLocaleString()}g ${f.stage}</span>
+                    ${keyPoint ? `<span class="what-key-point">${keyPoint}</span>` : ""}
+                </div>
+            `;
+            body.appendChild(row);
+        });
+
+        // Harvest row
+        const harvestRow = document.createElement("div");
+        harvestRow.className = "step-row harvest-row";
+        harvestRow.innerHTML = `
+            <div class="col-check"><span class="checkbox"></span></div>
+            <div class="col-step">H</div>
+            <div class="col-when">
+                <span class="when-date">${data.harvest_date}</span>
+                <span class="when-day">Day ${data.harvest_day}</span>
+            </div>
+            <div class="col-what">
+                <span class="what-main">HARVEST</span>
+            </div>
+        `;
+        body.appendChild(harvestRow);
+    }
+
+    function goBack() {
+        document.getElementById("inputScreen").style.display = "block";
+        document.getElementById("previewScreen").style.display = "none";
+    }
+</script>
+
+</body>
+</html>
