@@ -422,9 +422,14 @@
         body.innerHTML = "";
 
         data.feeds.forEach(f => {
+            let mainText = "";
             let keyPoint = "";
+
             if (f.extra_water_g > 0) {
-                keyPoint = `Feed ${f.wet_g.toLocaleString()}g wet mix + ${f.extra_water_g.toLocaleString()}g extra water = ${f.total_place_g.toLocaleString()}g total. Keep substrate moist.`;
+                mainText = `${f.wet_g.toLocaleString()}g wet mix + ${f.extra_water_g.toLocaleString()}g extra water`;
+                keyPoint = "Keep substrate moist — do not let it dry out";
+            } else {
+                mainText = `${f.wet_g.toLocaleString()}g wet mix`;
             }
 
             const row = document.createElement("div");
@@ -437,8 +442,8 @@
                     <span class="when-day">Day ${f.day}</span>
                 </div>
                 <div class="col-what">
-                    <span class="what-main">${f.extra_water_g > 0 ? f.total_place_g.toLocaleString() : f.wet_g.toLocaleString()}g ${f.stage}</span>
-                    ${keyPoint ? `<span class="what-key-point">${keyPoint}</span>` : ""}
+                    <span class="what-main">${mainText}</span>
+                    <span class="what-key-point">${f.stage}${keyPoint ? ' — ' + keyPoint : ''}</span>
                 </div>
             `;
             body.appendChild(row);

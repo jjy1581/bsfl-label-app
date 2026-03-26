@@ -11,9 +11,9 @@ DRY_FOOD_RATIO = 0.30  # dry food is 30% of total wet mix (70% water, 30% dry)
 
 # Feeding schedule: (day_offset, percentage_of_total)
 FEED_SCHEDULE = [
-    (0, 0.03, "Hatch day feed"),
+    (0, 0.02, "Hatch day feed"),
     (6, 0.20, "Growth feed 1"),
-    (7, 0.27, "Growth feed 2"),
+    (7, 0.28, "Growth feed 2"),
     (9, 0.50, "Final feed"),
 ]
 HARVEST_DAY = 11
