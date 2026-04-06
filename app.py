@@ -4,6 +4,15 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 
 # ============================================================
+# DEV WORKFLOW:
+# This codebase is edited on the MacBook Pro and pushed to GitHub.
+# To deploy, SSH into the Mac Mini and run:
+#   cd ~/bsfl-label-app && git pull
+#   launchctl stop com.reptibites.bsfl-label
+#   launchctl start com.reptibites.bsfl-label
+# ============================================================
+
+# ============================================================
 # BSFL Feeding Formula — Constants & Logic
 # ============================================================
 #
@@ -31,7 +40,7 @@ app = Flask(__name__)
 # The bulk of feed (50%) comes at day 9 when larvae are largest.
 #
 # WHY extra water on hatch day?
-# Neonates are extremely sensitive to drying out. We add 20%
+# Neonates are extremely sensitive to drying out. We add 40%
 # extra water (based on wet mix weight) on top of the day 0
 # wet mix to keep the substrate moist until the next feed.
 # ============================================================
@@ -40,7 +49,9 @@ EGG_WEIGHT_EACH = 0.0000276  # grams per single BSFL egg
 HATCH_RATE = 0.90             # expect ~90% of eggs to hatch
 DRY_FOOD_PER_LARVA = 0.22    # grams of dry feed per larva over full grow-out
 DRY_FOOD_RATIO = 0.40        # dry food is 40% of total wet mix weight (60% water)
-HATCH_DAY_EXTRA_WATER = 0.20 # 20% extra water on hatch day (as % of wet mix weight)
+                              # NOTE: if you change this ratio, also update the footer
+                              # text in templates/index.html that displays the ratio
+HATCH_DAY_EXTRA_WATER = 0.40 # 40% extra water on hatch day (as % of wet mix weight)
 
 # Feeding schedule: (day_offset, percentage_of_total_feed, stage_label)
 # Percentages must sum to 1.0
