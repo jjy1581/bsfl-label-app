@@ -49,7 +49,7 @@ app = Flask(__name__)
 # ============================================================
 
 EGG_WEIGHT_EACH = 0.0000276  # grams per single BSFL egg
-HATCH_RATE = 0.90             # expect ~90% of eggs to hatch
+HATCH_RATE = 0.50             # expect ~50% of eggs to hatch
 # WHY 0.164g dry per larva?
 # We determined we need 0.41g of WET feed per larva at our 60/40 ratio.
 # Since dry is 40% of wet mix: 0.41 * 0.40 = 0.164g dry per larva.
