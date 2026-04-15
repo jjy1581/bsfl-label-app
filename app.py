@@ -57,8 +57,10 @@ HATCH_RATE = 0.50             # expect ~50% of eggs to hatch
 WET_FOOD_PER_LARVA = 0.41    # grams of wet feed (60/40 mix) per larva over full grow-out
 DRY_FOOD_PER_LARVA = WET_FOOD_PER_LARVA * 0.40  # = 0.164g dry per larva
 DRY_FOOD_RATIO = 0.40        # dry food is 40% of total wet mix weight (60% water)
-                              # NOTE: if you change this ratio, also update the footer
-                              # text in templates/index.html that displays the ratio
+                              # NOTE: if you change ANY constant here (ratio, hatch rate,
+                              # feed per larva, etc.), ALSO update the footer text in
+                              # templates/index.html that displays these values to operators.
+                              # Operators rely on the label to know what formula was used!
 HATCH_DAY_EXTRA_WATER = 0.40 # 40% extra water on hatch day (as % of wet mix weight)
 
 # Feeding schedule: (day_offset, percentage_of_total_feed, stage_label)
