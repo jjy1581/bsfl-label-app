@@ -23,16 +23,16 @@ app = Flask(__name__)
 # wet mix using the water-to-dry ratio.
 #
 # WHY 0.41g wet feed per larva?
-# Calibrated estimate for total wet feed (60/40 water:dry mix)
+# Calibrated estimate for total wet feed (65/35 water:dry mix)
 # per larva across the full ~11 day grow-out. Previously 0.22g
 # dry (which was 0.55g wet at old 70/30 ratio). Updated based
 # on observed feed consumption. Will continue to be refined.
 #
-# WHY 60/40 water-to-dry ratio?
-# The wet mix is 60% water and 40% dry feed by weight.
+# WHY 65/35 water-to-dry ratio?
+# The wet mix is 65% water and 35% dry feed by weight.
 # This gives us a moist but not soupy substrate. The mix needs
 # to hold together and not pool water at the bottom.
-# To get total wet mix from dry: wet_mix = dry / 0.40
+# To get total wet mix from dry: wet_mix = dry / 0.35
 #
 # WHY these schedule percentages (3/10/37/50)?
 # Mimics the larval growth curve — tiny neonates eat almost
@@ -43,25 +43,25 @@ app = Flask(__name__)
 # Day 9 (50%) is the bulk feed when larvae are at peak size.
 #
 # WHY extra water on hatch day?
-# Neonates are extremely sensitive to drying out. We add 40%
+# Neonates are extremely sensitive to drying out. We add 20%
 # extra water (based on wet mix weight) on top of the day 0
 # wet mix to keep the substrate moist until the next feed.
 # ============================================================
 
 EGG_WEIGHT_EACH = 0.0000276  # grams per single BSFL egg
 HATCH_RATE = 0.50             # expect ~50% of eggs to hatch
-# WHY 0.164g dry per larva?
-# We determined we need 0.41g of WET feed per larva at our 60/40 ratio.
-# Since dry is 40% of wet mix: 0.41 * 0.40 = 0.164g dry per larva.
+# WHY 0.1435g dry per larva?
+# We determined we need 0.41g of WET feed per larva at our 65/35 ratio.
+# Since dry is 35% of wet mix: 0.41 * 0.35 = 0.1435g dry per larva.
 # The 0.41g wet figure is our calibrated number — dry is derived from it.
-WET_FOOD_PER_LARVA = 0.41    # grams of wet feed (60/40 mix) per larva over full grow-out
-DRY_FOOD_PER_LARVA = WET_FOOD_PER_LARVA * 0.40  # = 0.164g dry per larva
-DRY_FOOD_RATIO = 0.40        # dry food is 40% of total wet mix weight (60% water)
+WET_FOOD_PER_LARVA = 0.41    # grams of wet feed (65/35 mix) per larva over full grow-out
+DRY_FOOD_RATIO = 0.35        # dry food is 35% of total wet mix weight (65% water)
+DRY_FOOD_PER_LARVA = WET_FOOD_PER_LARVA * DRY_FOOD_RATIO  # = 0.1435g dry per larva
                               # NOTE: if you change ANY constant here (ratio, hatch rate,
                               # feed per larva, etc.), ALSO update the footer text in
                               # templates/index.html that displays these values to operators.
                               # Operators rely on the label to know what formula was used!
-HATCH_DAY_EXTRA_WATER = 0.40 # 40% extra water on hatch day (as % of wet mix weight)
+HATCH_DAY_EXTRA_WATER = 0.20 # 20% extra water on hatch day (as % of wet mix weight)
 
 # Feeding schedule: (day_offset, percentage_of_total_feed, stage_label)
 # Percentages must sum to 1.0
@@ -85,7 +85,7 @@ def calculate_schedule(egg_weight_g, start_date):
     total_dry_food = expected_larvae * DRY_FOOD_PER_LARVA
 
     # Step 3: Convert to total wet mix
-    # If dry is 40% of wet mix, then wet_mix = dry / 0.40
+    # If dry is 35% of wet mix, then wet_mix = dry / 0.35
     total_wet_food = total_dry_food / DRY_FOOD_RATIO
 
     feeds = []
