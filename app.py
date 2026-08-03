@@ -22,11 +22,11 @@ app = Flask(__name__)
 # then calculate total dry food for the bin, then convert to
 # wet mix using the water-to-dry ratio.
 #
-# WHY 0.41g wet feed per larva?
+# WHY 0.32g wet feed per larva?
 # Calibrated estimate for total wet feed (65/35 water:dry mix)
-# per larva across the full ~11 day grow-out. Previously 0.22g
-# dry (which was 0.55g wet at old 70/30 ratio). Updated based
-# on observed feed consumption. Will continue to be refined.
+# per larva across the full ~11 day grow-out. Previously 0.41g
+# wet at this same 65/35 ratio. Revised down based on observed
+# feed consumption. Will continue to be refined.
 #
 # WHY 65/35 water-to-dry ratio?
 # The wet mix is 65% water and 35% dry feed by weight.
@@ -49,19 +49,25 @@ app = Flask(__name__)
 # ============================================================
 
 EGG_WEIGHT_EACH = 0.0000276  # grams per single BSFL egg
-HATCH_RATE = 0.50             # expect ~50% of eggs to hatch
-# WHY 0.1435g dry per larva?
-# We determined we need 0.41g of WET feed per larva at our 65/35 ratio.
-# Since dry is 35% of wet mix: 0.41 * 0.35 = 0.1435g dry per larva.
-# The 0.41g wet figure is our calibrated number — dry is derived from it.
-WET_FOOD_PER_LARVA = 0.41    # grams of wet feed (65/35 mix) per larva over full grow-out
+HATCH_RATE = 0.33             # expect ~33% of eggs to hatch
+# WHY 0.112g dry per larva?
+# We determined we need 0.32g of WET feed per larva at our 65/35 ratio.
+# Since dry is 35% of wet mix: 0.32 * 0.35 = 0.112g dry per larva.
+# The 0.32g wet figure is our calibrated number — dry is derived from it.
+WET_FOOD_PER_LARVA = 0.32    # grams of wet feed (65/35 mix) per larva over full grow-out
 DRY_FOOD_RATIO = 0.35        # dry food is 35% of total wet mix weight (65% water)
-DRY_FOOD_PER_LARVA = WET_FOOD_PER_LARVA * DRY_FOOD_RATIO  # = 0.1435g dry per larva
-                              # NOTE: if you change ANY constant here (ratio, hatch rate,
-                              # feed per larva, etc.), ALSO update the footer text in
-                              # templates/index.html that displays these values to operators.
-                              # Operators rely on the label to know what formula was used!
+DRY_FOOD_PER_LARVA = WET_FOOD_PER_LARVA * DRY_FOOD_RATIO  # = 0.112g dry per larva
+                              # NOTE: the label footer now renders these values from the
+                              # /calculate response, so it can no longer drift out of sync
+                              # with the constants. But if you change ANY constant here,
+                              # BUMP FORMULA_REV below — that stamp is how an operator can
+                              # tell which formula produced an already-printed label.
 HATCH_DAY_EXTRA_WATER = 0.20 # 20% extra water on hatch day (as % of wet mix weight)
+
+# Formula revision stamp, printed on every label.
+# Bump this (to today's date) whenever any constant above changes, so a label
+# found on a bin weeks later can be traced back to the formula that made it.
+FORMULA_REV = "2026-08-03"
 
 # Feeding schedule: (day_offset, percentage_of_total_feed, stage_label)
 # Percentages must sum to 1.0
@@ -124,6 +130,15 @@ def calculate_schedule(egg_weight_g, start_date):
         "harvest_day": HARVEST_DAY,
         "scale_margin_eggs": 362,
         "scale_margin_pct": round(362 / num_eggs * 100, 1) if num_eggs > 0 else 0,
+        # Formula parameters, rendered into the label footer. Sourced from the
+        # constants above so the printed label can never disagree with the math.
+        "formula": {
+            "rev": FORMULA_REV,
+            "water_pct": round((1 - DRY_FOOD_RATIO) * 100),
+            "dry_pct": round(DRY_FOOD_RATIO * 100),
+            "wet_per_larva": WET_FOOD_PER_LARVA,
+            "hatch_pct": round(HATCH_RATE * 100),
+        },
     }
 
 

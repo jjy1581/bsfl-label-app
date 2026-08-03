@@ -268,6 +268,13 @@
             text-align: center;
         }
 
+        .formula-rev {
+            margin-top: 2px;
+            font-weight: 700;
+            color: #555;
+            letter-spacing: 0.5px;
+        }
+
         .demo-tag {
             display: inline-block;
             background: #000;
@@ -364,9 +371,9 @@
         </div>
 
         <div class="label-footer">
-            65/35 water:dry mix &bull; 0.41g wet/larva &bull; 50% hatch &bull;
+            <span id="formulaText"></span> &bull;
             Scale &plusmn;<span id="marginEggs"></span> eggs (<span id="marginPct"></span>%)
-            <span class="demo-tag">V1 DEMO</span>
+            <div class="formula-rev">Formula rev <span id="formulaRev"></span><span class="demo-tag">V1 DEMO</span></div>
         </div>
     </div>
 
@@ -417,6 +424,12 @@
         document.getElementById("totalDry").textContent = data.total_dry_g.toLocaleString();
         document.getElementById("marginEggs").textContent = data.scale_margin_eggs;
         document.getElementById("marginPct").textContent = data.scale_margin_pct;
+
+        // Footer formula line is built from the backend constants, never hardcoded here.
+        const fx = data.formula;
+        document.getElementById("formulaText").textContent =
+            `${fx.water_pct}/${fx.dry_pct} water:dry mix • ${fx.wet_per_larva}g wet/larva • ${fx.hatch_pct}% hatch`;
+        document.getElementById("formulaRev").textContent = fx.rev;
 
         const body = document.getElementById("stepsBody");
         body.innerHTML = "";
